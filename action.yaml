@@ -1,0 +1,118 @@
+---
+name: CVE scan trivy
+description: Scans container images for vulnerabilities with Trivy
+author: ixxeL
+inputs:
+  image-ref:
+    description: image reference(for backward compatibility)
+    required: false
+    default: alpine
+  scan-ref:
+    description: Scan reference
+    required: false
+    default: .
+  scan-type:
+    description: Scan type to use for scanning vulnerability
+    required: false
+    default: image
+  input:
+    description: reference of tar file to scan
+    required: false
+    default: ''
+  exit-code:
+    description: exit code when vulnerabilities were found
+    required: false
+    default: '0'
+  vuln-type:
+    description: comma-separated list of vulnerability types (os,library)
+    required: false
+    default: os,library
+  security-checks:
+    description: comma-separated list of what security issues to detect (vuln,config)
+    required: false
+    default: vuln
+  severity:
+    description: severities of vulnerabilities to be displayed
+    required: false
+    default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+  format:
+    description: output format (table, json, template)
+    required: false
+    default: table
+  template:
+    description: use an existing template for rendering output (@/contrib/sarif.tpl, @/contrib/gitlab.tpl, @/contrib/junit.tpl
+    required: false
+    default: ''
+  output:
+    description: writes results to a file with the specified file name
+    required: false
+    default: ''
+  skip-dirs:
+    description: comma separated list of directories where traversal is skipped
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+  - id: prepare-scan
+    run: |
+      export ARTIFACT_REF=${{ inputs.image-ref }}
+      if [ "${{ inputs.scan-type }}" = "fs" ] ||  [ "${{ inputs.scan-type }}" = "config" ];then
+        ARTIFACT_REF=${{ inputs.scan-ref }}
+      fi
+      if [ "${{ inputs.input }}" ]; then
+        ARTIFACT_REF="--input ${{ inputs.input }}"
+      fi
+      echo ::set-output name=ARTIFACT_REF::${ARTIFACT_REF}
+
+      ARGS=""
+      if [ "${{ inputs.template }}" ]; then
+        ARGS="$ARGS --template ${{ inputs.template }}"
+      fi
+      if [ "${{ inputs.output }}" ];then
+        ARGS="$ARGS --output ${{ inputs.output }}"
+      fi
+      if [ "${{ inputs.skip-dirs }}" ];then
+        str=${{ inputs.skip-dirs }}
+        final=${str//,/ --skip-dirs }
+        ARGS="$ARGS --skip-dirs $final"
+      fi
+      echo ::set-output name=ARGS::${ARGS}
+    shell: bash
+  - id: trivy-scan
+    run: |
+      echo -e "${BLUE}[ STEP - VULNERABILITIES CHECK ] > Scanning ${{ inputs.image-ref }} for vulnerabilities.${BLANK}"
+      echo -e "${CYAN}[ INFO ] > Trivy version.${BLANK}"
+      trivy --version | head -n 1
+      echo -e "${YELLOW}[ EXECUTING ] > Updating Trivy DB.${BLANK}"
+      trivy image --download-db-only
+      echo -e "${YELLOW}[ EXECUTING ] > Executing ${{ inputs.image-ref }} vuln scan.${BLANK}"
+      echo -e "${CYAN}[ INFO ] > Scan mode : ${{ inputs.scan-type }}, on artifact(s) : ${ARTIFACT_REF}.${BLANK}"
+
+      if [ ! ${{ inputs.scan-type }} = "config" ]
+      then
+        trivy ${{ inputs.scan-type }} --exit-code ${{ inputs.exit-code }} \
+                                      --vuln-type ${{ inputs.vuln-type }} \
+                                      --security-checks ${{ inputs.security-checks }} \
+                                      --severity ${{ inputs.severity }} \
+                                      --format ${{ inputs.format }} \
+                                      ${ARGS} \
+                                      ${ARTIFACT_REF}
+      else
+        trivy ${{ inputs.scan-type }} --exit-code ${{ inputs.exit-code }} \
+                                      --severity ${{ inputs.severity }} \
+                                      --format ${{ inputs.format }} \
+                                      ${ARGS} \
+                                      ${ARTIFACT_REF}
+      fi
+    shell: bash
+    env:
+      ARTIFACT_REF: ${{ steps.prepare-scan.outputs.ARTIFACT_REF }}
+      ARGS: ${{ steps.prepare-scan.outputs.ARGS }}
+      RED: \033[1;31m
+      GREEN: \033[1;32m
+      YELLOW: \033[1;33m
+      BLUE: \033[1;34m
+      PURPLE: \033[1;35m
+      CYAN: \033[1;36m
+      BLANK: \033[0m

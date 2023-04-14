@@ -1,0 +1,45 @@
+---
+name: trivy-scan-CI
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: ixxel/cd-toolbox:latest
+    steps:
+    - name: Trivy image scan
+      uses: ixxeL-actions/trivy-scan@main
+      with:
+        scan-type: image
+        image-ref: ixxel/cd-toolbox:latest
+        security-checks: vuln,config
+        severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+        output: result-img.log
+        format: table
+        template: ''
+        skip-dirs: /usr/local/bin,/usr/bin
+    - name: Trivy filesystem scan
+      uses: ixxeL-actions/trivy-scan@main
+      with:
+        scan-type: fs
+        scan-ref: /usr/local/bin
+        security-checks: vuln,config
+        severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+        output: result-fs.log
+        format: table
+        template: ''
+    - name: Trivy config scan
+      uses: ixxeL-actions/trivy-scan@main
+      with:
+        scan-type: config
+        scan-ref: /usr/local/bin
+        severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+        output: result-cfg.log
+        format: table
+        template: ''
