@@ -17,6 +17,8 @@ jobs:
     with:
       checkov-output-format: cli
       checkov-dir: .
+      img-name: test
+      tag: v1
     # name: Build
     # runs-on: ubuntu-20.04
     # container:
