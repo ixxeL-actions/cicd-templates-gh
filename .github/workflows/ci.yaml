@@ -25,3 +25,14 @@ jobs:
       env:
         TRIVY_USERNAME: ixxel
         TRIVY_PASSWORD: 2794d8ea-0fa5-4039-8036-9bc85f3765af
+    - name: Security scan for docker image (Grype)
+      id: scan-image1
+      uses: ixxeL-actions/grype-scan@main
+      with:
+        image-ref: docker.io/ixxel/ci-toolbox:latest
+        transport: registry
+        fail-on: '""'
+        output: table
+        scope: AllLayers
+        template: '""'
+        verbose: ''
