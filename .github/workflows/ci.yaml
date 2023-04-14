@@ -1,0 +1,25 @@
+---
+name: build
+on:
+  push:
+    branches:
+    - main
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: docker.io/ixxel/ci-toolbox:latest
+        format: table
+        vuln-type: os,library
+        severity: CRITICAL,HIGH
+      env:
+        TRIVY_USERNAME: ixxel
+        TRIVY_PASSWORD: 2794d8ea-0fa5-4039-8036-9bc85f3765af
