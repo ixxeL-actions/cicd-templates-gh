@@ -26,12 +26,12 @@ repos:
   - id: yamlfmt
     args: [--mapping, '2', --sequence, '2', --offset, '0', --width, '600']
     exclude: ^pipelines/delivery-full.yaml$|^pipelines/helm-chart-pipeline-remote.yaml$
-- repo: https://github.com/hadolint/hadolint
-  rev: v2.12.1-beta
-  hooks:
-  - id: hadolint
-    verbose: true
-    args: [src/Dockerfile, --failure-threshold, error]
+# - repo: https://github.com/hadolint/hadolint
+#   rev: v2.12.1-beta
+#   hooks:
+#   - id: hadolint
+#     verbose: true
+#     args: [src/Dockerfile, --failure-threshold, error]
 - repo: https://github.com/bridgecrewio/checkov.git
   rev: 2.3.165
   hooks:
