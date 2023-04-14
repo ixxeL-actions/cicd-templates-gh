@@ -7,16 +7,16 @@ on:
   workflow_dispatch:
 jobs:
   call-workflow-test:
-    name: call-workflow-test
-    runs-on: ubuntu-20.04
-    container:
-      image: ixxel/cd-toolbox:latest
-    steps:
-    - name: first step
-      uses: ixxeL-actions/workflows/.github/workflows/ci.yml@main
-      with:
-        checkov-output-format: cli
-        checkov-dir: .
+    # name: call-workflow-test
+    # runs-on: ubuntu-20.04
+    # container:
+    #   image: ixxel/cd-toolbox:latest
+    # steps:
+    # - name: first step
+    uses: ixxeL-actions/workflows/.github/workflows/ci.yml@main
+    with:
+      checkov-output-format: cli
+      checkov-dir: .
     # name: Build
     # runs-on: ubuntu-20.04
     # container:
