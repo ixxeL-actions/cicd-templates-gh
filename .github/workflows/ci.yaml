@@ -13,7 +13,7 @@ jobs:
     #   image: ixxel/cd-toolbox:latest
     # steps:
     # - name: first step
-    uses: ixxeL-actions/workflows/.github/workflows/ci.yml@main
+    uses: ixxeL-actions/workflows/.github/workflows/ci.yaml@main
     with:
       checkov-output-format: cli
       checkov-dir: .
