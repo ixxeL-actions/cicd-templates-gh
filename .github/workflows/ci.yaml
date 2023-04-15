@@ -20,7 +20,7 @@ jobs:
       img-name: test
       artefact: Dockerfile
       tag: v1
-      github-api-auth: 'false'
+      github-api-auth: false
     # name: Build
     # runs-on: ubuntu-20.04
     # container:
