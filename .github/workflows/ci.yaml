@@ -13,12 +13,14 @@ jobs:
     #   image: ixxel/cd-toolbox:latest
     # steps:
     # - name: first step
-    uses: ixxeL-actions/workflows/.github/workflows/ci.yaml@main
+    uses: ixxeL-actions/workflows/.github/workflows/container-img-builder.yaml@main
     with:
-      checkov-output-format: cli
-      checkov-dir: .
+      workingdir: .
+      format: cli
       img-name: test
+      artefact: Dockerfile
       tag: v1
+      github-api-auth: 'false'
     # name: Build
     # runs-on: ubuntu-20.04
     # container:
