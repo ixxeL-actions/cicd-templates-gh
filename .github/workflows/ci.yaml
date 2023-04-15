@@ -19,8 +19,8 @@ jobs:
       format: cli
       img-name: test
       artefact: Dockerfile
-      tag: v1
       github-api-auth: false
+      fail-on: low
     # name: Build
     # runs-on: ubuntu-20.04
     # container:
