@@ -147,3 +147,5 @@ RUN helm plugin install "https://github.com/chartmuseum/helm-push" \
     && sed -i 's/^#mount_program/mount_program/' /etc/containers/storage.conf
 
 ENV HELM_PLUGINS="/root/.local/share/helm/plugins"
+
+ENV TEST=gh
