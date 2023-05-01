@@ -19,8 +19,16 @@ jobs:
       format: cli
       img-name: test
       artefact: Dockerfile
-      github-api-auth: false
+      github-api-auth: true
+      github-api-rest-token: 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
       fail-on: low
+      cache-registry: docker.io/ixxel
+      docker-hub-login: true
+      docker-io-user: ixxel
+      docker-io-pwd: 2794d8ea-0fa5-4039-8036-9bc85f3765af
+
+
+
     # name: Build
     # runs-on: ubuntu-20.04
     # container:
