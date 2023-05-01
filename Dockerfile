@@ -149,3 +149,5 @@ RUN helm plugin install "https://github.com/chartmuseum/helm-push" \
 ENV HELM_PLUGINS="/root/.local/share/helm/plugins"
 
 ENV TEST=gh
+
+RUN mkdir -p /home/test
